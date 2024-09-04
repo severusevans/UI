@@ -37,6 +37,7 @@ local MISCELLANEOUS = MISCELLANEOUS
 local LFG_TYPE_DUNGEON = LFG_TYPE_DUNGEON
 local expansion = _G['EXPANSION_NAME'..GetExpansionLevel()]
 local QuickList = {}
+local Collapsed = {}
 
 local iconString = '|T%s:16:16:0:0:64:64:4:60:4:60|t'
 
@@ -166,15 +167,15 @@ end
 
 function DT:ReleasePanel(givenName)
 	local panel = DT.PanelPool.InUse[givenName]
-	if panel then
-		DT:EmptyPanel(panel)
-		DT.PanelPool.Free[givenName] = panel
-		DT.PanelPool.InUse[givenName] = nil
-		DT.RegisteredPanels[givenName] = nil
+	if not panel then return end
 
-		if E.db.movers then
-			E.db.movers[panel.moverName] = nil
-		end
+	DT:EmptyPanel(panel)
+	DT.PanelPool.Free[givenName] = panel
+	DT.PanelPool.InUse[givenName] = nil
+	DT.RegisteredPanels[givenName] = nil
+
+	if E.db.movers then
+		E.db.movers[panel.moverName] = nil
 	end
 end
 
@@ -568,7 +569,7 @@ function DT:UpdatePanelInfo(panelName, panel, ...)
 		dt.watchModKey = nil
 		dt.name = nil
 
-		E:StopFlash(dt)
+		E:StopFlash(dt, 1)
 
 		dt.text:FontTemplate(font, fontSize, fontOutline)
 		dt.text:SetJustifyH(db.textJustify or 'CENTER')
@@ -643,6 +644,8 @@ end
 
 function DT:UpdatePanelAttributes(name, db, fromLoad)
 	local Panel = DT.PanelPool.InUse[name]
+	if not Panel then return end
+
 	DT.OnLeave(Panel)
 
 	Panel.db = db
@@ -739,23 +742,25 @@ do
 end
 
 function DT:PopulateData(currencyOnly)
-	local Collapsed = {}
 	local listSize, i = GetCurrencyListSize(), 1
 
 	local headerIndex
 	while listSize >= i do
 		local info = DT:CurrencyListInfo(i)
-		if E.Retail and info.isHeader and not info.isHeaderExpanded then
-			C_CurrencyInfo_ExpandCurrencyList(i, true)
-			Collapsed[info.name] = true
-		end
+
 		if info.isHeader then
+			if E.Retail and not info.isHeaderExpanded then
+				C_CurrencyInfo_ExpandCurrencyList(i, true)
+				Collapsed[info.name] = true
+
+				listSize = GetCurrencyListSize()
+			end
+
 			G.datatexts.settings.Currencies.tooltipData[i] = { info.name, nil, nil, (info.name == expansion or info.name == MISCELLANEOUS) or strfind(info.name, LFG_TYPE_DUNGEON) }
 			E.global.datatexts.settings.Currencies.tooltipData[i] = { info.name, nil, nil, E.global.datatexts.settings.Currencies.headers }
 
 			headerIndex = i
-		end
-		if info.name and not info.isHeader then
+		elseif info.name then
 			local currencyLink = E.Retail and C_CurrencyInfo_GetCurrencyListLink(i)
 			local currencyID = currencyLink and C_CurrencyInfo_GetCurrencyIDFromLink(currencyLink)
 			if currencyID then
@@ -782,9 +787,9 @@ function DT:PopulateData(currencyOnly)
 				C_CurrencyInfo_ExpandCurrencyList(k, false)
 			end
 		end
-	end
 
-	wipe(Collapsed)
+		wipe(Collapsed)
+	end
 
 	if E.Retail and not currencyOnly then
 		for index = 1, GetNumSpecializations() do
@@ -861,25 +866,37 @@ function DT:BuildTables()
 	db.serverID[E.serverID][E.myrealm] = true
 end
 
+function DT:CloseMenus()
+	if E.Retail then
+		local manager = _G.Menu.GetManager()
+		if manager then
+			manager:CloseMenus()
+		end
+	else
+		CloseDropDownMenus()
+	end
+end
+
 function DT:Initialize()
 	DT.Initialized = true
-	DT.db = E.db.datatexts
 
 	DT:BuildTables()
 
 	E.EasyMenu:SetClampedToScreen(true)
 	E.EasyMenu:EnableMouse(true)
 	E.EasyMenu.MenuSetItem = function(dt, value)
-		local panelDB = dt.battlePanel and DT.db.battlePanel or DT.db.panels
-
-		panelDB[dt.parentName][dt.pointIndex] = value
-		DT:UpdatePanelInfo(dt.parentName, dt.parent)
+		local panelDB = (dt and dt.battlePanel) and DT.db.battlePanel or DT.db.panels
+		if panelDB then
+			panelDB[dt.parentName][dt.pointIndex] = value
+			DT:UpdatePanelInfo(dt.parentName, dt.parent)
+		end
 
 		DT.SelectedDatatext = nil
-		CloseDropDownMenus()
+
+		DT:CloseMenus()
 	end
 	E.EasyMenu.MenuGetItem = function(dt, value)
-		local panelDB = dt.battlePanel and DT.db.battlePanel or DT.db.panels
+		local panelDB = (dt and dt.battlePanel) and DT.db.battlePanel or DT.db.panels
 		return dt and (panelDB[dt.parentName] and panelDB[dt.parentName][dt.pointIndex] == value)
 	end
 

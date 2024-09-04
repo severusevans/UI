@@ -173,7 +173,7 @@ end
 local function get_zoneId_list()
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local instanceId = select(8, GetInstanceInfo())
-  local bottomText = L["Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.\nGroup Zone IDs must be prefixed with 'g', e.g. 'g277'. \nSupports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. \nSupports Instance IDs prefixed with 'i'."]
+  local bottomText = L["Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.\nGroup Zone IDs must be prefixed with 'g', e.g. 'g277'. \nSupports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. \nSupports Instance IDs prefixed with 'i'.\nEntries can be prefixed with '-' to negate."]
   if not instanceId and not currentmap_id then
     return ("%s\n\n%s"):format(Private.get_zoneId_list(), bottomText)
   elseif not currentmap_id then
@@ -920,18 +920,33 @@ end
 function Private.ExecEnv.ParseStringCheck(input)
   if not input then return end
   local matcher = {
-    zones = {},
-    Check = function(self, zone)
-      return self.zones[zone]
+    entries = {},
+    negativeEntries = {},
+    Check = function(self, e)
+      return false
     end,
-    Add = function(self, z)
-      self.zones[z] = true
+    CheckBoth = function(self, e)
+      return self.entries[e] and not self.negativeEntries[e]
+    end,
+    CheckPositive = function(self, e)
+      return self.entries[e]
+    end,
+    CheckNegative = function(self, e)
+      return not self.negativeEntries[e]
+    end,
+    Add = function(self, e, negate)
+      if negate then
+        self.negativeEntries[e] = true
+      else
+        self.entries[e] = true
+      end
     end
   }
 
   local start = 1
   local escaped = false
   local partial = ""
+  local negate = false
   for i = 1, #input do
     local c = input:sub(i, i)
     if escaped then
@@ -941,12 +956,25 @@ function Private.ExecEnv.ParseStringCheck(input)
       start = i + 1
       escaped = true
     elseif c == "," then
-      matcher:Add(partial .. input:sub(start, i - 1):trim())
+      matcher:Add(partial .. input:sub(start, i - 1):trim(), negate)
       start = i + 1
       partial = ""
+      negate = false
+    elseif c == "-" and partial:trim() == "" and input:sub(start, i - 1):trim() == "" then
+      start = i + 1
+      negate = true
     end
   end
-  matcher:Add(partial .. input:sub(start, #input):trim())
+  matcher:Add(partial .. input:sub(start, #input):trim(), negate)
+
+  -- Update check function
+  if next(matcher.entries) and next(matcher.negativeEntries) then
+    matcher.Check = matcher.CheckBoth
+  elseif next(matcher.entries) then
+    matcher.Check = matcher.CheckPositive
+  elseif next(matcher.negativeEntries) then
+    matcher.Check = matcher.CheckNegative
+  end
 
   return matcher
 end
@@ -1045,11 +1073,12 @@ function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
 end
 
 local function IsSpellKnownOrOverridesAndBaseIsKnown(spell, pet)
+  if spell == 0 then return false end
   if IsSpellKnown(spell, pet) then
     return true
   end
   local baseSpell = FindBaseSpellByID(spell)
-  if baseSpell and baseSpell ~= spell then
+  if baseSpell and baseSpell ~= spell and baseSpell ~= 0 then
     if FindSpellOverrideByID(baseSpell) == spell then
       return IsSpellKnown(baseSpell, pet)
     end
@@ -1059,11 +1088,12 @@ end
 ---@param spell string|number
 ---@return boolean result
 function WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(spell)
+  if spell == 0 then return false end
   if IsPlayerSpell(spell) then
     return true
   end
   local baseSpell = FindBaseSpellByID(spell)
-  if baseSpell and baseSpell ~= spell then
+  if baseSpell and baseSpell ~= spell and baseSpell ~= 0 then
     if FindSpellOverrideByID(baseSpell) == spell then
       return IsPlayerSpell(baseSpell)
     end
@@ -1073,6 +1103,7 @@ end
 
 ---@private
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
+  if spell == 0 then return false end
   local result = IsPlayerSpell(spell)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
@@ -1093,6 +1124,7 @@ end
 ---@param pet boolean?
 ---@return boolean result
 function WeakAuras.IsSpellKnown(spell, pet)
+  if spell == 0 then return false end
   if (pet) then
     return IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
   end
@@ -1109,14 +1141,6 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
     return false;
   end
   return WeakAuras.IsSpellKnown(spell, false) or WeakAuras.IsSpellKnown(spell, true)
-end
-
-function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
-  if exactCheck then
-    return tonumber(a) == tonumber(b)
-  else
-    return Private.ExecEnv.GetSpellName(a or "") == Private.ExecEnv.GetSpellName(b or "")
-  end
 end
 
 do
@@ -1350,7 +1374,7 @@ Private.load_prototype = {
     },
     {
       name = "dragonriding",
-      display = L["Dragonriding"],
+      display = L["Skyriding"],
       type = "tristate",
       init = WeakAuras.IsRetail() and "arg" or nil,
       width = WeakAuras.doubleWidth,
@@ -1848,7 +1872,7 @@ Private.load_prototype = {
       preamble = "local checker = Private.ExecEnv.ParseStringCheck(%q)",
       test = "checker:Check(zone)",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
-      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"],
+      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\. Prefix with '-' for negation."],
       optional = true,
     },
     {
@@ -2210,21 +2234,9 @@ Private.event_categories = {
 }
 
 local GetNameAndIconForSpellName = function(trigger)
-  if (trigger.use_exact_spellName) then
-    local spellName = tonumber(trigger.spellName)
-    local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-    return name, icon
-  else
-    local spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-    local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-    if name and icon then
-      return name, icon
-    end
-    if type(trigger.spellName) == "number" then
-      local name, _, icon = Private.ExecEnv.GetSpellInfo(trigger.spellName)
-      return name, icon
-    end
-  end
+  local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(trigger.spellName, trigger.use_exact_spellName, not trigger.use_ignoreoverride)
+  local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+  return name, icon
 end
 
 Private.event_prototypes = {
@@ -2491,7 +2503,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "attackable",
@@ -3313,7 +3325,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "class",
@@ -3962,7 +3974,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "class",
@@ -4479,7 +4491,7 @@ Private.event_prototypes = {
         conditionType = "string",
         preamble = "local sourceNameChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "sourceNameChecker:Check(sourceName)",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
       },
       {
         name = "sourceNpcId",
@@ -4498,7 +4510,7 @@ Private.event_prototypes = {
           return preamble:Check(state.sourceNpcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
         end,
@@ -4616,7 +4628,7 @@ Private.event_prototypes = {
         conditionType = "string",
         preamble = "local destNameChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "destNameChecker:Check(destName)",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -4638,7 +4650,7 @@ Private.event_prototypes = {
           return preamble:Check(state.destNpcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -5186,12 +5198,9 @@ Private.event_prototypes = {
       end
     end,
     loadInternalEventFunc = function(trigger, untrigger)
-      trigger.spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
       if spellName == nil then return {} end
       local events = {
@@ -5209,26 +5218,21 @@ Private.event_prototypes = {
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown/Charges/Count"],
     loadFunc = function(trigger)
-      trigger.spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
-      local spellName;
-      local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
-      WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune, followoverride)
+      local exactMatch = trigger.use_exact_spellName
+      local followoverride = not trigger.use_ignoreoverride
+      WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune, exactMatch, followoverride)
       if (trigger.use_showgcd) then
         WeakAuras.WatchGCD();
       end
     end,
     init = function(trigger)
-      trigger.spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
       local ret = {}
 
@@ -5247,21 +5251,19 @@ Private.event_prototypes = {
         track = "charges"
       end
 
-      if (type(spellName) == "string") then
-        spellName = string.format("%q", spellName)
-      end
-
       table.insert(ret, ([=[
         local spellname = %s
         local ignoreRuneCD = %s
         local showgcd = %s;
         local showlossofcontrol = %s;
         local ignoreSpellKnown = %s;
+        local useExact = %s
         local followoverride = %s
         local track = %q
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellname)
-        local startTime, duration, gcdCooldown, readyTime, modRate, paused = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track, followoverride)
-        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown, followoverride)
+        local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(spellname, useExact, followoverride)
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+        local startTime, duration, gcdCooldown, readyTime, modRate, paused = WeakAuras.GetSpellCooldown(effectiveSpellId, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
+        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(effectiveSpellId, ignoreSpellKnown)
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if showlossofcontrol and startTime and duration then
           local locStart, locDuration = WeakAuras.GetSpellLossOfControlCooldown(spellname);
@@ -5283,6 +5285,7 @@ Private.event_prototypes = {
         (trigger.use_showgcd and "true" or "false"),
         (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
+        (trigger.use_exact_spellName and "true" or "false"),
         (not trigger.use_ignoreoverride and "true" or "false"),
         track,
         showOnCheck
@@ -5653,52 +5656,35 @@ Private.event_prototypes = {
     type = "spell",
     events = {},
     loadInternalEventFunc = function(trigger, untrigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
       if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_READY:" .. spellName }
     end,
     name = L["Cooldown Ready Event"],
     loadFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
-      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
+      local useExact = trigger.use_exact_spellName
+      local followoverride = not trigger.use_ignoreoverride
+      WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
-
-      if (type(spellName) == "string") then
-        spellName = string.format("%q", spellName)
-      end
-
       local ret = [=[
-        local spellname = %s
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellname)
+        local triggerSpellName = %s
         local useExact = %s
         local followoverride = %s
-        local match
-        if followoverride then
-          match = Private.ExecEnv.CompareSpellIds(spellname, spellName, useExact)
-        else
-          match = Private.ExecEnv.CompareSpellIds(spellname, overrideSpell, useExact)
-        end
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(overrideSpell)
+        local effectiveTriggerSpellName = Private.ExecEnv.GetEffectiveSpellId(triggerSpellName, useExact, followoverride)
+        local match = overrideSpell == effectiveTriggerSpellName
       ]=]
       return ret:format(spellName,
                         trigger.use_exact_spellName and "true" or "false",
@@ -5753,50 +5739,35 @@ Private.event_prototypes = {
     type = "spell",
     events = {},
     loadInternalEventFunc = function(trigger, untrigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
       if spellName == nil then return {} end
       return { "SPELL_CHARGES_CHANGED:" .. spellName }
     end,
     name = L["Charges Changed Event"],
     loadFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
-      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
+      local useExact = trigger.use_exact_spellName
+      local followoverride = not trigger.use_ignoreoverride
+      WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-        spellName = spellName or ""
-      end
-      if (type(spellName) == "string") then
-        spellName = string.format("%q", spellName)
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
       local ret = [=[
-        local spellname = %s
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellname)
+        local triggerSpellName = %s
         local useExact = %s
         local followoverride = %s
-        local match
-        if followoverride then
-          match = Private.ExecEnv.CompareSpellIds(spellname, spellName, useExact)
-        else
-          match = Private.ExecEnv.CompareSpellIds(spellname, overrideSpell, useExact)
-        end
+        local effectiveTriggerSpellName = Private.ExecEnv.GetEffectiveSpellId(triggerSpellName, useExact, followoverride)
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(overrideSpell)
+        local match = overrideSpell == effectiveTriggerSpellName
       ]=]
       return ret:format(spellName,
                         trigger.use_exact_spellName and "true" or "false",
@@ -6615,12 +6586,9 @@ Private.event_prototypes = {
       }
     end,
     loadInternalEventFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
       if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_CHANGED:" .. spellName }
@@ -6629,30 +6597,28 @@ Private.event_prototypes = {
     name = L["Action Usable"],
     statesParameter = "one",
     loadFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
-      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
+      local useExact = trigger.use_exact_spellName
+      local followoverride = not trigger.use_ignoreoverride
+      WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
       end
       local ret = [=[
         local spellName = %s
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
+        local useExact = %s
         local followoverride = %s
-        local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(spellName, nil, nil, nil, nil, followoverride)
-        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellName, nil, followoverride)
+        local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(spellName, useExact, followoverride)
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+
+        local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(effectiveSpellId, nil, nil, nil, nil)
+        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(effectiveSpellId, nil)
         local stacks = maxCharges and maxCharges > 1 and charges
                        or spellCount and spellCount > 0 and spellCount
                        or nil
@@ -6674,6 +6640,7 @@ Private.event_prototypes = {
       end
 
       return ret:format(spellName,
+                        trigger.use_exact_spellName and "true" or "false",
                         not trigger.use_ignoreoverride and "true" or "false")
     end,
     GetNameAndIcon = GetNameAndIconForSpellName,
@@ -7353,6 +7320,8 @@ Private.event_prototypes = {
         local triggerTotemName = %q
         local triggerTotemPattern = %q
         local triggerTotemPatternOperator = %q
+        local triggerTotemIcon = %s
+        local triggerTotemIconOperator = %q
         local clone = %s
         local inverse = %s
         local remainingCheck = %s
@@ -7367,6 +7336,10 @@ Private.event_prototypes = {
 
           if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
             active = false;
+          end
+
+          if not Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator) then
+            active = false
           end
 
           if (inverse) then
@@ -7398,8 +7371,9 @@ Private.event_prototypes = {
           local found = false;
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
-            if ((startTime and startTime ~= 0) and
-              Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
+            if ((startTime and startTime ~= 0)
+              and Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
+              and Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator)
             ) then
               found = true;
             end
@@ -7419,7 +7393,9 @@ Private.event_prototypes = {
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
 
-            if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
+            if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
+              or not Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator)
+            then
               active = false;
             end
             if (active and remainingCheck) then
@@ -7457,6 +7433,8 @@ Private.event_prototypes = {
         trigger.use_totemName and totemName or "",
         trigger.use_totemNamePattern and trigger.totemNamePattern or "",
         trigger.use_totemNamePattern and trigger.totemNamePattern_operator or "",
+        trigger.use_icon and trigger.icon or "nil",
+        trigger.use_icon and trigger.icon_operator or "",
         trigger.use_clones and "true" or "false",
         trigger.use_inverse and "true" or "false",
         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
@@ -7482,6 +7460,14 @@ Private.event_prototypes = {
         name = "totemNamePattern",
         display = L["Totem Name Pattern Match"],
         type = "longstring",
+      },
+      {
+        name = "icon",
+        display = L["Totem Icon"],
+        type = "number",
+        conditionType = "number",
+        operator_types = "only_equal",
+        store = true,
       },
       {
         name = "clones",
@@ -7532,7 +7518,7 @@ Private.event_prototypes = {
         if not exactSpellMatch and tonumber(itemName) then
           itemName = C_Item.GetItemInfo(itemName)
         end
-        local count = C_Item.GetItemCount(itemName or "", %s, %s);
+        local count = C_Item.GetItemCount(itemName or "", %s, %s, %s, %s);
         local reagentQuality, reagentQualityTexture
         if WeakAuras.IsRetail() and itemName then
           reagentQuality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemName)
@@ -7545,7 +7531,9 @@ Private.event_prototypes = {
         itemName,
         trigger.use_exact_itemName and "true" or "nil",
         trigger.use_includeBank and "true" or "nil",
-        trigger.use_includeCharges and "true" or "nil"
+        trigger.use_includeCharges and "true" or "nil",
+        WeakAuras.IsRetail() and trigger.use_includeReagentBank and "true" or "nil",
+        WeakAuras.IsRetail() and trigger.use_includeWarBandBank and "true" or "nil"
       )
     end,
     args = {
@@ -7572,6 +7560,20 @@ Private.event_prototypes = {
         display = L["Include Bank"],
         type = "toggle",
         test = "true"
+      },
+      {
+        name = "includeReagentBank",
+        display = L["Include Reagent Bank"],
+        type = "toggle",
+        test = "true",
+        enable = WeakAuras.IsRetail(),
+      },
+      {
+        name = "includeWarBandBank",
+        display = L["Include War Band Bank"],
+        type = "toggle",
+        test = "true",
+        enable = WeakAuras.IsRetail(),
       },
       {
         name = "includeCharges",
@@ -7834,6 +7836,16 @@ Private.event_prototypes = {
         test = "true"
       },
       {
+        name = "enchantID",
+        hidden = true,
+        test = "true",
+        display = L["Enchant ID"],
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
+        noProgressSource = true
+      },
+      {
         name = "stacks",
         display = L["Stack Count"],
         type = "number",
@@ -7884,7 +7896,7 @@ Private.event_prototypes = {
         name = "enchanted",
         display = L["Enchanted"],
         hidden = true,
-        init = "found ~= nil",
+        init = "found == true",
         test = "true",
         store = true,
         conditionType = "bool",
@@ -9149,7 +9161,7 @@ Private.event_prototypes = {
           return preamble:Check(state.name)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "npcId",
@@ -9168,7 +9180,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "value",
@@ -9687,7 +9699,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not trigger.use_inverse
         end,

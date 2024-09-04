@@ -194,6 +194,8 @@ local function TabTextureCoords(tex, x1)
 end
 
 local function FixSidebarTabCoords()
+	local hasDejaCharacterStats = E:IsAddOnEnabled('DejaCharacterStats')
+
 	local index = 1
 	local tab = _G['PaperDollSidebarTab'..index]
 	while tab do
@@ -204,8 +206,7 @@ local function FixSidebarTabCoords()
 			tab.Highlight:SetColorTexture(1, 1, 1, 0.3)
 			tab.Highlight:SetAllPoints()
 
-			-- Check for DejaCharacterStats. Lets hide the Texture if the AddOn is loaded.
-			if E:IsAddOnEnabled('DejaCharacterStats') then
+			if hasDejaCharacterStats then
 				tab.Hider:SetTexture()
 			else
 				tab.Hider:SetColorTexture(0, 0, 0, 0.8)
@@ -285,7 +286,7 @@ function S:Blizzard_UIPanels_Game()
 	S:HandlePortraitFrame(CharacterFrame)
 
 	S:HandleTrimScrollBar(_G.ReputationFrame.ScrollBar)
-	S:HandleTrimScrollBar(_G.TokenFrame.ScrollBar)
+	S:HandleTrimScrollBar(_G.TokenFrame.ScrollBar, true) -- updates to this can taint transferring currencies
 
 	for _, Slot in next, { _G.PaperDollItemsFrame:GetChildren() } do
 		if Slot:IsObjectType('Button') or Slot:IsObjectType('ItemButton') then

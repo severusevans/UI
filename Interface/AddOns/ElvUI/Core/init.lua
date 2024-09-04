@@ -116,7 +116,7 @@ end
 function E:ParseVersionString(addon)
 	local version = GetAddOnMetadata(addon, 'Version')
 	if strfind(version, 'project%-version') then
-		return 13.72, '13.72-git', nil, true
+		return 13.76, '13.76-git', nil, true
 	else
 		local release, extra = strmatch(version, '^v?([%d.]+)(.*)')
 		return tonumber(release), release..extra, extra ~= ''
@@ -279,7 +279,7 @@ function E:SetEasyMenuAnchor(menu, frame)
 	local anchor1 = (bottom and left and 'BOTTOMLEFT') or (bottom and 'BOTTOMRIGHT') or (left and 'TOPLEFT') or 'TOPRIGHT'
 	local anchor2 = (bottom and left and 'TOPLEFT') or (bottom and 'TOPRIGHT') or (left and 'BOTTOMLEFT') or 'BOTTOMRIGHT'
 
-	UIDropDownMenu_SetAnchor(menu, 0, 0, anchor1, frame, anchor2)
+	UIDropDownMenu_SetAnchor(menu, 1, -1, anchor1, frame, anchor2)
 end
 
 function E:ResetProfile()
@@ -300,6 +300,32 @@ end
 
 function E:OnEnable()
 	E:Initialize()
+end
+
+do
+	local info = {
+		Auras = 'auras',
+		ActionBars = 'actionbar',
+		Bags = 'bags',
+		Chat = 'chat',
+		DataBars = 'databars',
+		DataTexts = 'datatexts',
+		NamePlates = 'nameplates',
+		Tooltip = 'tooltip',
+		UnitFrames = 'unitframe'
+	}
+
+	function E:SetupDB()
+		for key, value in next, info do
+			local module = E[key]
+			if module then
+				module.db = E.db[value]
+			end
+		end
+
+		E.TotemTracker.db = E.db.general.totems
+		E.Skins.db = E.private.skins
+	end
 end
 
 function E:OnInitialize()
@@ -343,6 +369,7 @@ function E:OnInitialize()
 	E.Spacing = E.PixelMode and 0 or 1
 	E.loadedtime = GetTime()
 
+	E:SetupDB()
 	E:UIMult()
 	E:UpdateMedia()
 	E:InitializeInitialModules()

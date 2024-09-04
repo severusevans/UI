@@ -228,8 +228,8 @@ do --this can save some main file locals
 			if next(g) then if #g > 1 then sort(g) end for n in gmatch(t, '\24') do local _, v = next(g) t = gsub(t, n, f[v], 1) tremove(g, 1) f[v] = nil end end return t
 		end
 
-		--Simpys: Spring Green (2EFF7E), Vivid Sky Blue (52D9FF), Medium Purple (8D63DB), Ticke Me Pink (FF8EB6), Yellow Orange (FFAF53)
-		local SimpyColors = function(t) return specialText(t, 0.18,1.00,0.49, 0.32,0.85,1.00, 0.55,0.38,0.85, 1.00,0.55,0.71, 1.00,0.68,0.32) end
+		--Simpys: Turquoise (49CAF5), Sea Green (80C661), Khaki (FFF461), Salmon (F6885F), Orchid (CD84B9), Light Sky Blue (58CCF5)
+		local SimpyColors = function(t) return specialText(t, 0.28,0.79,0.96, 0.50,0.77,0.38, 1.00,0.95,0.38, 0.96,0.53,0.37, 0.80,0.51,0.72, 0.34,0.80,0.96) end
 		--Detroit Lions: Honolulu Blue to Silver [Elv: I stoles it @Simpy]
 		local ElvColors = function(t) return specialText(t, 0,0.42,0.69, 0.61,0.61,0.61) end
 		--Rainbow: FD3E44, FE9849, FFDE4B, 6DFD65, 54C4FC, A35DFA, C679FB, FE81C1
@@ -291,6 +291,7 @@ do --this can save some main file locals
 			z['Sliceoflife-Andorhal']	= itsPooc	-- [Horde] Rogue
 			-- Simpy (1168: Cenarius, 125: Cenarion Circle)
 			z['Player-1168-069A1283']	= itsSimpy -- Hunter:	Arieva
+			z['Player-1168-0AD89000']	= itsSimpy -- Hunter:	Nibble
 			z['Player-1168-0698394A']	= itsSimpy -- Rogue:	Buddercup
 			z['Player-1168-069A3A12']	= itsSimpy -- Paladin:	Cutepally
 			z['Player-1168-0AD0F035']	= itsSimpy -- DH:		Puddle
@@ -299,6 +300,7 @@ do --this can save some main file locals
 			z['Player-1168-0680170F']	= itsSimpy -- DK:		Ezek
 			z['Player-1168-06981C6F']	= itsSimpy -- Warrior:	Glice
 			z['Player-1168-0698066B']	= itsSimpy -- Shaman:	Kalline
+			z['Player-1168-0AD631CE']	= itsSimpy -- Shaman:	Barbossa
 			z['Player-1168-06989ADF']	= itsSimpy -- Druid:	Puttietat
 			z['Player-1168-069837CD']	= itsSimpy -- Warlock:	Simpy
 			z['Player-1168-06984CD4']	= itsSimpy -- Monk:		Twigly
@@ -446,6 +448,7 @@ do --this can save some main file locals
 			z['Player-1598-0F5E4639']	= ElvGreen -- [Alliance] Druid: Luckyone
 			z['Player-1598-0F3E51B0']	= ElvGreen -- [Alliance] Druid: Luckydruid
 			z['Player-1598-0F46FF5A']	= ElvGreen -- [Horde] Evoker
+			z['Player-1598-0F92E2B9']	= ElvGreen -- [Horde] Evoker 2
 			z['Player-1598-0BFF3341']	= ElvGreen -- [Horde] DH
 			z['Player-1598-0BD22704']	= ElvGreen -- [Horde] Priest
 			z['Player-1598-0BEFA545']	= ElvGreen -- [Horde] Monk
@@ -772,6 +775,18 @@ function CH:StyleChat(frame)
 	tab:SetScript('OnClick', CH.Tab_OnClick)
 	tab.Text:FontTemplate(LSM:Fetch('font', CH.db.tabFont), CH.db.tabFontSize, CH.db.tabFontOutline)
 
+	if frame == _G.GeneralDockManager.primary then
+		local GMChatFrame = _G.GMChatFrame
+		if GMChatFrame then
+			GMChatFrame:FontTemplate(font, size, outline)
+		end
+
+		local communities = _G.CommunitiesFrame and _G.CommunitiesFrame.Chat and _G.CommunitiesFrame.Chat.MessageFrame
+		if communities then
+			communities:FontTemplate(font, size, outline)
+		end
+	end
+
 	if not frame.isDocked then
 		PanelTemplates_TabResize(tab, tab.sizePadding or 0)
 	end
@@ -988,17 +1003,15 @@ function CH:GetLines(frame)
 end
 
 function CH:CopyChat(frame)
-	if not _G.CopyChatFrame:IsShown() then
-		local _, fontSize = _G.FCF_GetChatWindowInfo(frame:GetID())
+	if not CH.CopyChatFrame:IsShown() then
+		local count = CH:GetLines(frame)
+		local text = tconcat(copyLines, ' \n', 1, count)
 
-		_G.FCF_SetChatWindowFontSize(frame, frame, 0.01)
-		_G.CopyChatFrame:Show()
-		local lineCt = CH:GetLines(frame)
-		local text = tconcat(copyLines, ' \n', 1, lineCt)
-		_G.FCF_SetChatWindowFontSize(frame, frame, fontSize)
-		_G.CopyChatFrameEditBox:SetText(text)
+		CH.CopyChatFrameEditBox:SetText(text)
+		CH.CopyChatFrame:Show()
 	else
-		_G.CopyChatFrame:Hide()
+		CH.CopyChatFrameEditBox:SetText('')
+		CH.CopyChatFrame:Hide()
 	end
 end
 
@@ -1618,7 +1631,7 @@ function CH:GetBNFirstToonClassColor(id)
 	if not id then return end
 	for i = 1, BNGetNumFriends() do
 		local info = C_BattleNet_GetFriendAccountInfo(i)
-		if info.bnetAccountID == id then
+		if info and info.bnetAccountID == id then
 			for y = 1, C_BattleNet_GetFriendNumGameAccounts(i) do
 				local gameInfo = C_BattleNet_GetFriendGameAccountInfo(i, y)
 				if gameInfo.clientProgram == BNET_CLIENT_WOW and gameInfo.className and gameInfo.className ~= '' then
@@ -2202,8 +2215,7 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 			elseif arg1 == 'FRIEND_ONLINE' or arg1 == 'FRIEND_OFFLINE' then
 				local accountInfo = C_BattleNet_GetAccountInfoByID(arg13)
 				local gameInfo = accountInfo.gameAccountInfo
-
-				if gameInfo.clientProgram and gameInfo.clientProgram ~= '' then
+				if gameInfo and gameInfo.clientProgram and gameInfo.clientProgram ~= '' then
 					if GetTitleIconTexture then
 						GetTitleIconTexture(gameInfo.clientProgram, TitleIconVersion_Small, function(success, texture)
 							if success then
@@ -3293,7 +3305,7 @@ function CH:SetupQuickJoin(holder)
 end
 
 function CH:BuildCopyChatFrame()
-	local frame = CreateFrame('Frame', 'CopyChatFrame', E.UIParent)
+	local frame = CreateFrame('Frame', 'ElvUI_CopyChatFrame', E.UIParent)
 	tinsert(_G.UISpecialFrames, 'CopyChatFrame')
 	frame:SetTemplate('Transparent')
 	frame:Size(700, 200)
@@ -3328,36 +3340,39 @@ function CH:BuildCopyChatFrame()
 		end
 	end)
 	frame:SetFrameStrata('DIALOG')
+	CH.CopyChatFrame = frame
 
-	local scrollArea = CreateFrame('ScrollFrame', 'CopyChatScrollFrame', frame, 'UIPanelScrollFrameTemplate')
-	scrollArea:Point('TOPLEFT', frame, 'TOPLEFT', 8, -30)
-	scrollArea:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -30, 8)
-	S:HandleScrollBar(_G.CopyChatScrollFrameScrollBar)
-	scrollArea:SetScript('OnSizeChanged', function(scroll)
-		_G.CopyChatFrameEditBox:Width(scroll:GetWidth())
-		_G.CopyChatFrameEditBox:Height(scroll:GetHeight())
-	end)
-	scrollArea:HookScript('OnVerticalScroll', function(scroll, offset)
-		_G.CopyChatFrameEditBox:SetHitRectInsets(0, 0, offset, (_G.CopyChatFrameEditBox:GetHeight() - offset - scroll:GetHeight()))
-	end)
-
-	local editBox = CreateFrame('EditBox', 'CopyChatFrameEditBox', frame)
+	local editBox = CreateFrame('EditBox', 'ElvUI_CopyChatFrameEditBox', frame)
+	editBox:Height(200)
 	editBox:SetMultiLine(true)
 	editBox:SetMaxLetters(99999)
 	editBox:EnableMouse(true)
 	editBox:SetAutoFocus(false)
 	editBox:SetFontObject('ChatFontNormal')
-	editBox:Width(scrollArea:GetWidth())
-	editBox:Height(200)
-	editBox:SetScript('OnEscapePressed', function() _G.CopyChatFrame:Hide() end)
-	scrollArea:SetScrollChild(editBox)
-	_G.CopyChatFrameEditBox:SetScript('OnTextChanged', function(_, userInput)
+	editBox:SetScript('OnEscapePressed', function() CH.CopyChatFrame:Hide() end)
+	editBox:SetScript('OnTextChanged', function(_, userInput)
 		if userInput then return end
-		local _, Max = _G.CopyChatScrollFrameScrollBar:GetMinMaxValues()
-		for _ = 1, Max do
-			_G.ScrollFrameTemplate_OnMouseWheel(_G.CopyChatScrollFrame, -1)
+		local _, maxValue = CH.CopyChatScrollFrame.ScrollBar:GetMinMaxValues()
+		for _ = 1, maxValue do
+			_G.ScrollFrameTemplate_OnMouseWheel(CH.CopyChatScrollFrame, -1)
 		end
 	end)
+	CH.CopyChatFrameEditBox = editBox
+
+	local scrollFrame = CreateFrame('ScrollFrame', 'ElvUI_CopyChatScrollFrame', frame, 'UIPanelScrollFrameTemplate')
+	scrollFrame:Point('TOPLEFT', frame, 'TOPLEFT', 8, -30)
+	scrollFrame:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -30, 8)
+	scrollFrame:SetScript('OnSizeChanged', function(_, width, height)
+		CH.CopyChatFrameEditBox:Size(width, height)
+	end)
+	scrollFrame:HookScript('OnVerticalScroll', function(scroll, offset)
+		CH.CopyChatFrameEditBox:SetHitRectInsets(0, 0, offset, (CH.CopyChatFrameEditBox:GetHeight() - offset - scroll:GetHeight()))
+	end)
+	CH.CopyChatScrollFrame = scrollFrame
+
+	scrollFrame:SetScrollChild(editBox)
+	editBox:Width(scrollFrame:GetWidth())
+	S:HandleScrollBar(scrollFrame.ScrollBar)
 
 	local close = CreateFrame('Button', 'CopyChatFrameCloseButton', frame, 'UIPanelCloseButton')
 	close:Point('TOPRIGHT')
@@ -3660,12 +3675,13 @@ function CH:FCF_Tab_OnClick(button)
 		_G.CloseDropDownMenus() -- Close all dropdowns
 		_G.SELECTED_CHAT_FRAME = chat -- If frame is docked assume that a click is to select a chat window, not drag it
 
-		if chat.isDocked and _G.FCFDock_GetSelectedWindow(_G.GENERAL_CHAT_DOCK) ~= chat then
+		if chat.isDocked and _G.FCFDock_GetSelectedWindow(_G.GeneralDockManager) ~= chat then
 			_G.FCF_SelectDockFrame(chat)
 		end
 
 		if GetCVar('chatStyle') ~= 'classic' then
-			_G.ChatEdit_SetLastActiveWindow(chat.editBox)
+			local chatFrame = (chat.isDocked and _G.GeneralDockManager.primary) or chat
+			_G.ChatEdit_SetLastActiveWindow(chatFrame.editBox)
 		end
 
 		chat:ResetAllFadeTimes()
@@ -3709,7 +3725,6 @@ function CH:Initialize()
 
 	CH:DelayGuildMOTD() -- Keep this before `is Chat Enabled` check
 
-	CH.db = E.db.chat
 	if not E.private.chat.enable then
 		-- if the chat module is off we still need to spawn the dts for the panels
 		-- if we are going to have the panels show even when it's disabled

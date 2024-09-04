@@ -24,11 +24,9 @@ local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 
 local GetMouseFocus = GetMouseFocus or function()
-  local frames = _G.GetMouseFoci()
-  return frames and frames[1]
+	local frames = _G.GetMouseFoci()
+	return frames and frames[1]
 end
-
-local GetGlidingInfo = C_PlayerInfo.GetGlidingInfo
 
 -- These variables will be left-over when disabled if they were used (for reuse later if they become re-enabled):
 ---- Fader.HoverHooked, Fader.TargetHooked
@@ -67,13 +65,7 @@ local function updateInstanceDifficulty(element)
 	element.InstancedCached = element.InstanceDifficulty and element.InstanceDifficulty[difficultyID] or nil
 end
 
-local function CanGlide()
-	if not GetGlidingInfo then return end
-
-	local _, canGlide = GetGlidingInfo()
-	return canGlide
-end
-
+local isGliding = false
 local function Update(self, event, unit)
 	local element = self.Fader
 	if self.isForced or (not element or not element.count or element.count <= 0) then
@@ -87,7 +79,11 @@ local function Update(self, event, unit)
 	end
 
 	-- try to get the unit from the parent
-	if event == 'PLAYER_CAN_GLIDE_CHANGED' or not unit then
+	if event == 'PLAYER_IS_GLIDING_CHANGED' then
+		isGliding = unit -- unit is true/false with the event being PLAYER_IS_GLIDING_CHANGED
+	end
+
+	if not unit then
 		unit = self.unit
 	end
 
@@ -119,7 +115,7 @@ local function Update(self, event, unit)
 		(element.Health and UnitHealth(unit) < UnitHealthMax(unit)) or
 		(element.Power and (PowerTypesFull[powerType] and UnitPower(unit) < UnitPowerMax(unit))) or
 		(element.Vehicle and (oUF.isRetail or oUF.isCata) and UnitHasVehicleUI(unit)) or
-		(element.DynamicFlight and oUF.isRetail and not CanGlide()) or
+		(element.DynamicFlight and oUF.isRetail and not isGliding) or
 		(element.Hover and GetMouseFocus() == (self.__faderobject or self))
 	then
 		ToggleAlpha(self, element, element.MaxAlpha)
@@ -317,9 +313,9 @@ if oUF.isRetail then
 	tinsert(options.Casting.events, 'UNIT_SPELLCAST_EMPOWER_STOP')
 	options.DynamicFlight = {
 		enable = function(self)
-			self:RegisterEvent('PLAYER_CAN_GLIDE_CHANGED', Update, true)
+			self:RegisterEvent('PLAYER_IS_GLIDING_CHANGED', Update, true)
 		end,
-		events = {'PLAYER_CAN_GLIDE_CHANGED'}
+		events = {'PLAYER_IS_GLIDING_CHANGED'}
 	}
 end
 

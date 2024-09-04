@@ -130,8 +130,6 @@ L["Afk"] = "Afk"
 L["Aggro"] = "Aggro"
 L["Agility"] = "Agilidade"
 L["Ahn'Qiraj"] = "Ahn'Qiraj"
---[[Translation missing --]]
-L["Aku'mai"] = "Aku'mai"
 L["Alert Type"] = "Tipo de alerta"
 L["Alive"] = "Vivo"
 L["All"] = "Todos"
@@ -184,10 +182,6 @@ L["At Percent"] = "Na porcentagem"
 L["At Value"] = "Em valor"
 --[[Translation missing --]]
 L["At War"] = "At War"
---[[Translation missing --]]
-L["Atal'ai Defenders"] = "Atal'ai Defenders"
---[[Translation missing --]]
-L["Atal'alarion"] = "Atal'alarion"
 L["Attach to End"] = "Anexar ao final"
 L["Attach to Start"] = "Anexar ao inicio"
 L["Attack Power"] = "Poder de ataque"
@@ -228,12 +222,12 @@ L["Automatic Rotation"] = "Rotação Automática"
 --[[Translation missing --]]
 L["Available features: %s"] = "Available features: %s"
 --[[Translation missing --]]
-L["Avatar of Hakkar"] = "Avatar of Hakkar"
---[[Translation missing --]]
 L["Avoidance (%)"] = "Avoidance (%)"
 --[[Translation missing --]]
 L["Avoidance Rating"] = "Avoidance Rating"
 L["Ayamiss the Hunter"] = "Ayamiss, o Caçador"
+--[[Translation missing --]]
+L["Azuregos"] = "Azuregos"
 L["Back and Forth"] = "Vai e volta"
 L["Background"] = "Plano de fundo"
 L["Background Color"] = "Cor do Plano de Fundo"
@@ -241,8 +235,6 @@ L["Background Color"] = "Cor do Plano de Fundo"
 L["Bar Color/Gradient Start"] = "Bar Color/Gradient Start"
 --[[Translation missing --]]
 L["Bar Texture"] = "Bar Texture"
---[[Translation missing --]]
-L["Baron Aquanis"] = "Baron Aquanis"
 L["Baron Geddon"] = "Barão Geddon"
 --[[Translation missing --]]
 L["Battle for Azeroth"] = "Battle for Azeroth"
@@ -261,7 +253,7 @@ L["BigWigs Stage"] = "BigWigs Stage"
 L["BigWigs Timer"] = "Cronômetro do BigWigs"
 L["Black Wing Lair"] = "Covil Asa Negra"
 --[[Translation missing --]]
-L["Blackfathom Deeps"] = "Blackfathom Deeps"
+L["Bleed"] = "Bleed"
 L["Blizzard Combat Text"] = "Texto de Combate da Blizzard"
 --[[Translation missing --]]
 L["Blizzard Cooldown Reduction"] = "Blizzard Cooldown Reduction"
@@ -608,11 +600,7 @@ L["Down, then Right"] = "Down, then Right"
 --[[Translation missing --]]
 L["Dragonflight"] = "Dragonflight"
 --[[Translation missing --]]
-L["Dragonriding"] = "Dragonriding"
---[[Translation missing --]]
 L["Drain"] = "Drain"
---[[Translation missing --]]
-L["Dreamscythe and Weaver"] = "Dreamscythe and Weaver"
 --[[Translation missing --]]
 L["Dropdown Menu"] = "Dropdown Menu"
 --[[Translation missing --]]
@@ -695,6 +683,8 @@ L["Enables (incorrect) round down of seconds, which was the previous default beh
 L["Enchant Applied"] = "Enchant Applied"
 --[[Translation missing --]]
 L["Enchant Found"] = "Enchant Found"
+--[[Translation missing --]]
+L["Enchant ID"] = "Enchant ID"
 --[[Translation missing --]]
 L["Enchant Missing"] = "Enchant Missing"
 --[[Translation missing --]]
@@ -814,8 +804,6 @@ L["Feature %q is already disabled"] = "Feature %q is already disabled"
 --[[Translation missing --]]
 L["Feature %q is already enabled"] = "Feature %q is already enabled"
 --[[Translation missing --]]
-L["Festering Rotslime"] = "Festering Rotslime"
---[[Translation missing --]]
 L["Fetch Absorb"] = "Fetch Absorb"
 --[[Translation missing --]]
 L["Fetch Heal Absorb"] = "Fetch Heal Absorb"
@@ -912,15 +900,11 @@ L["Garr"] = "Garr"
 --[[Translation missing --]]
 L["Gehennas"] = "Gehennas"
 --[[Translation missing --]]
-L["Gelihast"] = "Gelihast"
---[[Translation missing --]]
 L["General"] = "General"
 --[[Translation missing --]]
 L["General Rajaxx"] = "General Rajaxx"
 --[[Translation missing --]]
 L["GetNameAndIcon Function (fallback state)"] = "GetNameAndIcon Function (fallback state)"
---[[Translation missing --]]
-L["Ghamoo-ra"] = "Ghamoo-ra"
 --[[Translation missing --]]
 L["Glancing"] = "Glancing"
 --[[Translation missing --]]
@@ -1041,9 +1025,9 @@ L["Icon Function"] = "Icon Function"
 --[[Translation missing --]]
 L["Icon Function (fallback state)"] = "Icon Function (fallback state)"
 --[[Translation missing --]]
-L["Id"] = "Id"
---[[Translation missing --]]
 L["ID"] = "ID"
+--[[Translation missing --]]
+L["Id"] = "Id"
 --[[Translation missing --]]
 L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/weakauras!"] = "If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/weakauras!"
 --[[Translation missing --]]
@@ -1084,6 +1068,10 @@ L["Include Death Runes"] = "Include Death Runes"
 --[[Translation missing --]]
 L["Include Pets"] = "Include Pets"
 --[[Translation missing --]]
+L["Include Reagent Bank"] = "Include Reagent Bank"
+--[[Translation missing --]]
+L["Include War Band Bank"] = "Include War Band Bank"
+--[[Translation missing --]]
 L["Incoming Heal"] = "Incoming Heal"
 --[[Translation missing --]]
 L["Increase Precision Below"] = "Increase Precision Below"
@@ -1101,9 +1089,9 @@ L["Install the addons BugSack and BugGrabber for detailed error logs."] = "Insta
 L["Instance"] = "Instance"
 L["Instance Difficulty"] = "Dificuldade da Instância"
 --[[Translation missing --]]
-L["Instance Id"] = "Instance Id"
---[[Translation missing --]]
 L["Instance ID"] = "Instance ID"
+--[[Translation missing --]]
+L["Instance Id"] = "Instance Id"
 --[[Translation missing --]]
 L["Instance Info"] = "Instance Info"
 --[[Translation missing --]]
@@ -1183,19 +1171,17 @@ L["Item Slot String"] = "Item Slot String"
 L["Item Type"] = "Item Type"
 L["Item Type Equipped"] = "Tipo de Item Equipado"
 --[[Translation missing --]]
-L["Jammal'an and Ogom"] = "Jammal'an and Ogom"
---[[Translation missing --]]
 L["Jin'do the Hexxer"] = "Jin'do the Hexxer"
 --[[Translation missing --]]
 L["Journal Stage"] = "Journal Stage"
+--[[Translation missing --]]
+L["Kazzak"] = "Kazzak"
 --[[Translation missing --]]
 L["Keep Inside"] = "Keep Inside"
 --[[Translation missing --]]
 L["Kel'Thuzad"] = "Kel'Thuzad"
 --[[Translation missing --]]
 L["Kurinnaxx"] = "Kurinnaxx"
---[[Translation missing --]]
-L["Lady Sarevess"] = "Lady Sarevess"
 --[[Translation missing --]]
 L["Large"] = "Large"
 --[[Translation missing --]]
@@ -1255,8 +1241,6 @@ L["Loot Specialization"] = "Loot Specialization"
 L["Loot Specialization Id"] = "Loot Specialization Id"
 --[[Translation missing --]]
 L["Loot Specialization Name"] = "Loot Specialization Name"
---[[Translation missing --]]
-L["Lorgus Jett"] = "Lorgus Jett"
 --[[Translation missing --]]
 L["Lost"] = "Lost"
 --[[Translation missing --]]
@@ -1380,8 +1364,6 @@ L["Monster Whisper"] = "Monster Whisper"
 L["Monster Yell"] = "Grito do monstro"
 --[[Translation missing --]]
 L["Moon"] = "Moon"
---[[Translation missing --]]
-L["Morphaz and Hazzas"] = "Morphaz and Hazzas"
 --[[Translation missing --]]
 L["Most remaining time"] = "Most remaining time"
 L["Mounted"] = "Montado"
@@ -1564,8 +1546,6 @@ L["Only if on a different realm"] = "Only if on a different realm"
 L["Only if Primary"] = "Only if Primary"
 --[[Translation missing --]]
 L["Onyxia"] = "Onyxia"
---[[Translation missing --]]
-L["Onyxia's Lair"] = "Onyxia's Lair"
 --[[Translation missing --]]
 L["Opaque"] = "Opaque"
 --[[Translation missing --]]
@@ -1837,6 +1817,8 @@ L["Right, then Up"] = "Right, then Up"
 --[[Translation missing --]]
 L["Role"] = "Role"
 --[[Translation missing --]]
+L["Rollback snapshot is complete. Thank you for your patience!"] = "Rollback snapshot is complete. Thank you for your patience!"
+--[[Translation missing --]]
 L["Rotate Animation"] = "Rotate Animation"
 L["Rotate Left"] = "Girar à esquerda"
 L["Rotate Right"] = "Girar à direita"
@@ -1912,8 +1894,6 @@ L["Set IDs can be found on websites such as wowhead.com/cata/item-sets"] = "Set 
 --[[Translation missing --]]
 L["Set IDs can be found on websites such as wowhead.com/item-sets"] = "Set IDs can be found on websites such as wowhead.com/item-sets"
 --[[Translation missing --]]
-L["Shade of Eranikus"] = "Shade of Eranikus"
---[[Translation missing --]]
 L["Shadow Resistance"] = "Shadow Resistance"
 --[[Translation missing --]]
 L["Shadowlands"] = "Shadowlands"
@@ -1959,6 +1939,8 @@ L["Since Stack Gain"] = "Since Stack Gain"
 L["Since Stack Lost"] = "Since Stack Lost"
 --[[Translation missing --]]
 L["Size & Position"] = "Size & Position"
+--[[Translation missing --]]
+L["Skyriding"] = "Skyriding"
 --[[Translation missing --]]
 L["Slide Animation"] = "Slide Animation"
 L["Slide from Bottom"] = "Deslizar de baixo"
@@ -2063,6 +2045,8 @@ L["Spiral In And Out"] = "Espiral dentro e fora"
 L["Spirit"] = "Spirit"
 --[[Translation missing --]]
 L["Stack Count"] = "Stack Count"
+--[[Translation missing --]]
+L["Stack trace:"] = "Stack trace:"
 L["Stacks"] = "Pilhas"
 --[[Translation missing --]]
 L["Stacks Function"] = "Stacks Function"
@@ -2121,23 +2105,25 @@ L["Summon"] = "Invocar"
 --[[Translation missing --]]
 L["Sun"] = "Sun"
 --[[Translation missing --]]
-L["Sunken Temple"] = "Sunken Temple"
---[[Translation missing --]]
 L["Supports multiple entries, separated by commas"] = "Supports multiple entries, separated by commas"
 --[[Translation missing --]]
 L[ [=[Supports multiple entries, separated by commas
 ]=] ] = [=[Supports multiple entries, separated by commas
 ]=]
 --[[Translation missing --]]
-L["Supports multiple entries, separated by commas. Escape ',' with \\"] = "Supports multiple entries, separated by commas. Escape ',' with \\"
+L["Supports multiple entries, separated by commas. Escape ',' with \\. Prefix with '-' for negation."] = "Supports multiple entries, separated by commas. Escape ',' with \\. Prefix with '-' for negation."
+--[[Translation missing --]]
+L["Supports multiple entries, separated by commas. Prefix with '-' for negation."] = "Supports multiple entries, separated by commas. Prefix with '-' for negation."
 --[[Translation missing --]]
 L[ [=[Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.
 Group Zone IDs must be prefixed with 'g', e.g. 'g277'. 
 Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. 
-Supports Instance IDs prefixed with 'i'.]=] ] = [=[Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.
+Supports Instance IDs prefixed with 'i'.
+Entries can be prefixed with '-' to negate.]=] ] = [=[Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.
 Group Zone IDs must be prefixed with 'g', e.g. 'g277'. 
 Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. 
-Supports Instance IDs prefixed with 'i'.]=]
+Supports Instance IDs prefixed with 'i'.
+Entries can be prefixed with '-' to negate.]=]
 L["Swing"] = "Balançar"
 L["Swing Timer"] = "Tempo de balanço"
 --[[Translation missing --]]
@@ -2307,6 +2293,8 @@ L["Total Units"] = "Total Units"
 L["Totem"] = "Totem"
 --[[Translation missing --]]
 L["Totem #%i"] = "Totem #%i"
+--[[Translation missing --]]
+L["Totem Icon"] = "Totem Icon"
 L["Totem Name"] = "Nome do totem"
 --[[Translation missing --]]
 L["Totem Name Pattern Match"] = "Totem Name Pattern Match"
@@ -2338,8 +2326,6 @@ L["Trivial (Low Level)"] = "Trivial (Low Level)"
 L["True"] = "True"
 --[[Translation missing --]]
 L["Trying to repair broken conditions in %s likely caused by a WeakAuras bug."] = "Trying to repair broken conditions in %s likely caused by a WeakAuras bug."
---[[Translation missing --]]
-L["Twilight Lord Kelris"] = "Twilight Lord Kelris"
 --[[Translation missing --]]
 L["Twin Emperors"] = "Twin Emperors"
 L["Type"] = "Tipo"
@@ -2460,7 +2446,7 @@ Last upgrade: %s
 
 |cffff0000You should BACKUP your WTF folder BEFORE pressing this button.|r]=]
 --[[Translation missing --]]
-L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."] = "WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."
+L["WeakAuras is creating a rollback snapshot of your auras. This snapshot will allow you to revert to the current state of your auras if something goes wrong. This process may cause your framerate to drop until it is complete."] = "WeakAuras is creating a rollback snapshot of your auras. This snapshot will allow you to revert to the current state of your auras if something goes wrong. This process may cause your framerate to drop until it is complete."
 --[[Translation missing --]]
 L["WeakAuras Profiling"] = "WeakAuras Profiling"
 --[[Translation missing --]]
@@ -2479,6 +2465,8 @@ L["Width"] = "Largura"
 L["Wobble"] = "Oscilar"
 --[[Translation missing --]]
 L["World Boss"] = "World Boss"
+--[[Translation missing --]]
+L["World Bosses"] = "World Bosses"
 --[[Translation missing --]]
 L["Wrap"] = "Wrap"
 --[[Translation missing --]]

@@ -1,29 +1,38 @@
-# [5.15.4](https://github.com/WeakAuras/WeakAuras2/tree/5.15.4) (2024-07-27)
+# [5.17.0](https://github.com/WeakAuras/WeakAuras2/tree/5.17.0) (2024-08-25)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.15.3...5.15.4)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.16.1...5.17.0)
 
 ## Highlights
 
- - Class and Specialzation triggers now support class/spec conditions 
+ - Performance improvemsn
+- Bug fixes
+- Add Bleed type via LibDispel 
 
 ## Commits
 
-Boneshock (1):
+InfusOnWoW (9):
 
-- fix error when creating new reputation trigger
+- Item Count: Add support for reagent/account bank api
+- Fix lua errors with progressSources after trigger moving
+- Zone Names/Zone Ids, etc: Add - for negation
+- BT2: Enable hostility check for group units too
+- Spell Triggers: Handle spell names similar to before
+- BT2: Add Bleed type via LibDispel
+- Options: Allow or searching via " or " and "|"
+- Options: Update shape shift combobox if the shape shift data changed
+- Totem Trigger: Implement an icon check
 
-InfusOnWoW (6):
+emptyrivers (6):
 
-- Class and Specialization Trigger: Add condition for class/spec
-- Triggers: Don't set state.icon if the icon is unknown
-- Model Sub Element: Fix model frame level
-- Model+Model Sub Element: Remove model_path
-- Model Sub Element: Fix Model option
-- Fix custom text function returning a table leading to a lua error
+- upgrade cachebuild priority if building & there's a cache miss
+- more improvements to spell cache thread
+- defer snapshots out of login process
+- make spellCache a background task
+- supercharge dynFrame
+- improve build advertisement
 
-mrbuds (3):
+mrbuds (2):
 
-- Fix transmission of auras
-- submodel: change default on classic for an existing model
-- Model: change default on classic for an existing model
+- Fix issue with talent load option showing wrong hero talents in tree
+- Workaround C_Reputation.GetFactionDataByIndex returning nil when it shouldn't
 

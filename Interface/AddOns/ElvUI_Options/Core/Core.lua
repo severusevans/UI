@@ -44,13 +44,13 @@ C.Values = {
 	FontFlags = ACH.FontValues,
 	FontSize = { min = 8, max = 64, step = 1 },
 	Roman = { 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX' }, -- 1 to 20
-	AllPositions = { LEFT = 'LEFT', RIGHT = 'RIGHT', TOP = 'TOP', BOTTOM = 'BOTTOM', CENTER = 'CENTER' },
-	EdgePositions = { LEFT = 'LEFT', RIGHT = 'RIGHT', TOP = 'TOP', BOTTOM = 'BOTTOM' },
-	SidePositions = { LEFT = 'LEFT', RIGHT = 'RIGHT' },
-	TextPositions = { BOTTOMRIGHT = 'BOTTOMRIGHT', BOTTOMLEFT = 'BOTTOMLEFT', TOPRIGHT = 'TOPRIGHT', TOPLEFT = 'TOPLEFT', BOTTOM = 'BOTTOM', TOP = 'TOP' },
-	AllPoints = { TOPLEFT = 'TOPLEFT', LEFT = 'LEFT', BOTTOMLEFT = 'BOTTOMLEFT', RIGHT = 'RIGHT', TOPRIGHT = 'TOPRIGHT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOP = 'TOP', BOTTOM = 'BOTTOM', CENTER = 'CENTER' },
-	Anchors = { TOPLEFT = 'TOPLEFT', LEFT = 'LEFT', BOTTOMLEFT = 'BOTTOMLEFT', RIGHT = 'RIGHT', TOPRIGHT = 'TOPRIGHT', BOTTOMRIGHT = 'BOTTOMRIGHT', TOP = 'TOP', BOTTOM = 'BOTTOM' },
-	Strata = { BACKGROUND = 'BACKGROUND', LOW = 'LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH', DIALOG = 'DIALOG', TOOLTIP = 'TOOLTIP' },
+	AllPositions = { LEFT = L["LEFT"], RIGHT = L["RIGHT"], TOP = L["TOP"], BOTTOM = L["BOTTOM"], CENTER = L["CENTER"] },
+	EdgePositions = { LEFT = L["LEFT"], RIGHT = L["RIGHT"], TOP = L["TOP"], BOTTOM = L["BOTTOM"] },
+	SidePositions = { LEFT = L["LEFT"], RIGHT = L["RIGHT"] },
+	TextPositions = { BOTTOMRIGHT = L["BOTTOMRIGHT"], BOTTOMLEFT = L["BOTTOMLEFT"], TOPRIGHT = L["TOPRIGHT"], TOPLEFT = L["TOPLEFT"], BOTTOM = L["BOTTOM"], TOP = L["TOP"] },
+	AllPoints = { TOPLEFT = L["TOPLEFT"], LEFT = L["LEFT"], BOTTOMLEFT = L["BOTTOMLEFT"], RIGHT = L["RIGHT"], TOPRIGHT = L["TOPRIGHT"], BOTTOMRIGHT = L["BOTTOMRIGHT"], TOP = L["TOP"], BOTTOM = L["BOTTOM"], CENTER = L["CENTER"] },
+	Anchors = { TOPLEFT = L["TOPLEFT"], LEFT = L["LEFT"], BOTTOMLEFT = L["BOTTOMLEFT"], RIGHT = L["RIGHT"], TOPRIGHT = L["TOPRIGHT"], BOTTOMRIGHT = L["BOTTOMRIGHT"], TOP = L["TOP"], BOTTOM = L["BOTTOM"] },
+	Strata = { BACKGROUND = L["BACKGROUND"], LOW = L["LOW"], MEDIUM = L["MEDIUM"], HIGH = L["HIGH"], DIALOG = L["DIALOG"], TOOLTIP = L["TOOLTIP"] },
 	SmartAuraPositions = {
 		DISABLED = L["Disable"],
 		BUFFS_ON_DEBUFFS = L["Buffs on Debuffs"],
@@ -153,7 +153,7 @@ local DEVELOPERS = {
 	'|cffff2020Nihilistzsche|r',
 	'|TInterface/AddOns/ElvUI/Core/Media/ChatLogos/Beer:15:15:0:0:64:64:5:59:5:59|t |cfff48cbaRepooc|r',
 	'|TInterface/AddOns/ElvUI/Core/Media/ChatLogos/Clover:15:15:0:0:64:64:5:59:5:59|t |cff4beb2cLuckyone|r',
-	E:TextGradient('Simpy but my name needs to be longer.', 0.18,1.00,0.49, 0.32,0.85,1.00, 0.55,0.38,0.85, 1.00,0.55,0.71, 1.00,0.68,0.32)
+	E:TextGradient('Simpy but my name needs to be longer.', 0.28,0.79,0.96, 0.50,0.77,0.38, 1.00,0.95,0.38, 0.96,0.53,0.37, 0.80,0.51,0.72, 0.34,0.80,0.96)
 }
 
 local TESTERS = {
@@ -178,7 +178,7 @@ local TESTERS = {
 	'Caedis',
 	'|cff00c0faBenik|r',
 	'|T136012:15:15:0:0:64:64:5:59:5:59|t |cff006fdcRubgrsch|r',
-	'AcidWeb |TInterface/AddOns/ElvUI/Core/Media/ChatLogos/Gem:15:15:-1:2:64:64:6:60:8:60|t',
+	'|TInterface/AddOns/ElvUI/Core/Media/ChatLogos/Gem:15:15:-1:2:64:64:6:60:8:60|t AcidWeb',
 	'|T135167:15:15:0:0:64:64:5:59:5:59|t Loon - For being right',
 	'|T134297:15:15:0:0:64:64:5:59:5:59|t |cffFF7D0ABladesdruid|r - AKA SUPERBEAR',
 }
@@ -296,9 +296,10 @@ E.Options.args.info.args.credits.args.donators.args.string = ACH:Description(DON
 --Create Profiles Table
 E.Options.args.profiles = ACH:Group(L["Profiles"], nil, 4, 'tab')
 E.Options.args.profiles.args.desc = ACH:Description(L["This feature will allow you to transfer settings to other characters."], 0)
-E.Options.args.profiles.args.distributeProfile = ACH:Execute(L["Share Current Profile"], L["Sends your current profile to your target."], 1, function() if not UnitExists('target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') or UnitIsUnit('player', 'target') then E:Print(L["You must be targeting a player."]) return end local name, server = UnitName('target') if name and (not server or server == '') then D:Distribute(name) elseif server then D:Distribute(name, true) end end, nil, nil, nil, nil, nil, function() return not E.global.general.allowDistributor end)
-E.Options.args.profiles.args.distributeGlobal = ACH:Execute(L["Share Filters"], L["Sends your filter settings to your target."], 2, function() if not UnitExists('target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') or UnitIsUnit('player', 'target') then E:Print(L["You must be targeting a player."]) return end local name, server = UnitName('target') if name and (not server or server == '') then D:Distribute(name, false, true) elseif server then D:Distribute(name, true, true) end end, nil, nil, nil, nil, nil, function() return not E.global.general.allowDistributor end)
-E.Options.args.profiles.args.allowDistributor = ACH:Toggle(L["Allow Sharing"], L["Both users will need this option enabled."], 3, nil, nil, nil, function() return E.global.general.allowDistributor end, function(_, value) E.global.general.allowDistributor = value; D:UpdateSettings() end)
+E.Options.args.profiles.args.distributeProfile = ACH:Execute(L["Share Profile"], L["Sends your current profile to your target."], 1, function() if not UnitExists('target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') or UnitIsUnit('player', 'target') then E:Print(L["You must be targeting a player."]) return end local name, server = UnitName('target') if name and (not server or server == '') then D:Distribute(name) elseif server then D:Distribute(name, true) end end, nil, nil, nil, nil, nil, function() return not E.global.general.allowDistributor end)
+E.Options.args.profiles.args.distributePrivate = ACH:Execute(L["Share Private"], nil, 2, function() if not UnitExists('target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') or UnitIsUnit('player', 'target') then E:Print(L["You must be targeting a player."]) return end local name, server = UnitName('target') if name and (not server or server == '') then D:Distribute(name, false, 'private') elseif server then D:Distribute(name, true, 'private') end end, nil, nil, nil, nil, nil, function() return not E.global.general.allowDistributor end)
+E.Options.args.profiles.args.distributeGlobal = ACH:Execute(L["Share Global"], nil, 3, function() if not UnitExists('target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') or UnitIsUnit('player', 'target') then E:Print(L["You must be targeting a player."]) return end local name, server = UnitName('target') if name and (not server or server == '') then D:Distribute(name, false, 'global') elseif server then D:Distribute(name, true, 'global') end end, nil, nil, nil, nil, nil, function() return not E.global.general.allowDistributor end)
+E.Options.args.profiles.args.allowDistributor = ACH:Toggle(L["Allow Sharing"], L["Both users will need this option enabled."], 4, nil, nil, nil, function() return E.global.general.allowDistributor end, function(_, value) E.global.general.allowDistributor = value; D:UpdateSettings() end)
 E.Options.args.profiles.args.spacer = ACH:Spacer(10)
 
 E.Options.args.profiles.args.profile = E.Libs.AceDBOptions:GetOptionsTable(E.data)
@@ -339,8 +340,8 @@ do -- Import and Export
 		if plugin then
 			return E:ProfileTableToPluginFormat(profileData, profileType)
 		else
-			local decodedText = (profileData and E:TableToLuaString(profileData)) or nil
-			return D:CreateProfileExport(decodedText, profileType, profileKey)
+			local decodedString = (profileData and E:TableToLuaString(profileData)) or nil
+			return D:CreateProfileExport(profileType, profileKey, decodedString)
 		end
 	end
 
@@ -445,7 +446,7 @@ do -- Import and Export
 				input.hidden = not exporting
 
 				if exporting then
-					local profileKey, profileExport = D:ExportProfile(profileType, which)
+					local profileKey, profileExport = D:ExportProfile(profileType, nil, which)
 					if not profileKey or not profileExport then
 						label.name = L["Error exporting profile!"]
 					else
