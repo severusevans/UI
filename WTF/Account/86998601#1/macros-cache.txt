@@ -1,0 +1,450 @@
+VER 3 000000000000002A "ABOMB" "1100170"
+/cast Raise Dead
+/cast Abomination Limb
+END
+VER 3 0000000000000034 "anzu" "INV_MISC_QUESTIONMARK"
+/click extraactionbutton 1
+END
+VER 3 0000000000000069 "Arcane Surge" "134400"
+/cast Arcane Surge
+END
+VER 3 000000000000003B "Aspect of the tu" "INV_MISC_QUESTIONMARK"
+/cast Aspect of the turtle
+/cancelaura Aspect of the turtle
+END
+VER 3 0000000000000033 "Balance" "SPELL_HOLY_ELUNESGRACE"
+/kps load balance
+/equipset Balance
+/usetalents [spec:1]2;1
+END
+VER 3 0000000000000050 "black ox" "651727"
+/target Black Ox Statue
+/cast Provoke
+END
+VER 3 0000000000000062 "blink" "134400"
+#showtooltip
+/stopcasting
+/cancelaura Ice Block
+/cast Blink
+END
+VER 3 0000000000000057 "blizzard" "629077"
+#showtooltip
+/cast [@cursor] Blizzard
+END
+VER 3 0000000000000056 "bLIZZARD" "INV_MISC_QUESTIONMARK"
+/cast [@target] Blizzard
+END
+VER 3 0000000000000061 "Block" "134400"
+#showtooltip
+/stopcasting
+/cast Ice Block
+END
+VER 3 000000000000004B "BOP" "3015740"
+/cancelaura Blessing of Protection
+END
+VER 3 0000000000000046 "cancel sl" "INV_MISC_QUESTIONMARK"
+/cancelaura Blessing of Protection
+END
+VER 3 000000000000002B "cELESTIAL " "SPELL_NATURE_NATUREGUARDIAN"
+/cast Celestial Alignment
+/cast Moonfire
+END
+VER 3 000000000000000B "chi-ji" "INV_MISC_QUESTIONMARK"
+/use Contemplation of Chi-Ji
+END
+VER 3 0000000000000003 "coin of blessing" "INV_MISC_QUESTIONMARK"
+/use Coin of Blessings
+END
+VER 3 000000000000005B "Combustion" "135824"
+#showtooltip
+/cast Combustion
+/use 13
+/use 14
+END
+VER 3 0000000000000040 "cs" "237513"
+#showtooltip Death amd Decay
+/cast 
+END
+VER 3 0000000000000027 "cure" "INV_MISC_QUESTIONMARK"
+#showtooltip Nature's Cure
+/cast [@mouseover] Nature's Cure
+END
+VER 3 000000000000003F "d" "538517"
+END
+VER 3 0000000000000009 "dance party" "INV_MISC_QUESTIONMARK"
+/Cast Bear Form
+/dance
+/say dance party
+END
+VER 3 0000000000000039 "Dash" "ABILITY_DRUID_DASH"
+/cast dash
+END
+VER 3 000000000000001D "dbm" "INV_MISC_QUESTIONMARK"
+/dbm pull
+END
+VER 3 0000000000000043 "death grip" "INV_MISC_QUESTIONMARK"
+#showtooltip
+/use [@mouseover,harm][] death grip
+END
+VER 3 000000000000002C "defense" "INV_MISC_QUESTIONMARK"
+#showtooltip Barkskin
+/cast Barkskin
+/cast Cenarion Ward
+END
+VER 3 0000000000000011 "demi" "INV_MISC_QUESTIONMARK"
+/yell This is Real, This is Me.  I'm exactly where I'm supposed to be.  Gonna Let the Light.  SHINE ON ME!
+END
+VER 3 0000000000000035 "deterrence" "INV_MISC_QUESTIONMARK"
+/cast Deterrence
+/cancelaura Deterrence
+END
+VER 3 0000000000000079 "dh kick" "1247266"
+/cast [@mouseover,harm][@focus,harm][] Disrupt
+END
+VER 3 000000000000002E "divine shield" "INV_MISC_QUESTIONMARK"
+#showtooltip Divine Shield
+/cast Divine Shield
+/cancelaura Divine Shield
+END
+VER 3 0000000000000071 "dk kick" "134400"
+#showtooltip Mind Freeze
+/cast [@focus,harm,nodead][] Mind Freeze
+END
+VER 3 0000000000000012 "Dnd" "136144"
+/cast [@cursor] Death and Decay
+END
+VER 3 0000000000000055 "elysian" "3565443"
+#showtooltip
+/cast [mod:ctrl, @player] Sigil of Spite; [nomod, @cursor] Sigil of Spite
+END
+VER 3 000000000000004D "extra" "INV_MISC_QUESTIONMARK"
+/click ExtraActionButton1
+END
+VER 3 0000000000000058 "Flamestrike" "236216"
+#showtooltip
+/cast [@cursor] Flamestrike
+END
+VER 3 000000000000006A "flamestrike" "135824"
+#showtooltip
+/cast [@cursor] Flamestrike
+END
+VER 3 0000000000000014 "fly" "ABILITY_DRUID_FLIGHTFORM"
+/cast Flight Form
+END
+VER 3 0000000000000049 "focus" "INV_MISC_QUESTIONMARK"
+/focus [@mouseover]
+END
+VER 3 000000000000005C "focus" "4640492"
+/focus [@mouseover,nodead,exists]; [@target,exists]
+END
+VER 3 000000000000004F "focus" "572034"
+/clearfocus
+/focus [@mouseover]
+END
+VER 3 000000000000003D "fon" "INV_MISC_QUESTIONMARK"
+#showtooltip
+/cast [@cursor] Force of nature
+END
+VER 3 0000000000000063 "Gem" "134400"
+#showtooltip Conjure Mana Gem
+/run for b=0,4 do for s=1,36 do n=GetContainerItemLink(b,s);if n and string.find(n,"Mana Gem") then PickupContainerItem(b,s);DeleteCursorItem();end;end;end;
+/cast Conjure Mana Gem
+END
+VER 3 0000000000000068 "GEM" "134400"
+#showtooltip Conjure Mana Gem
+/run for b=0,4 do for s=1,36 do n=GetContainerItemLink(b,s);if n and string.find(n,“Mana Gem”) then PickupContainerItem(b,s);DeleteCursorItem();end;end;end;
+/cast Conjure Mana Gem
+Will destroy existing gems and re-create the
+END
+VER 3 0000000000000032 "Guardian" "ABILITY_PHYSICAL_TAUNT"
+/kps load guardian
+/equipset Guardian
+/usetalents [spec:2]1;2
+END
+VER 3 000000000000002F "hand" "INV_MISC_QUESTIONMARK"
+#showtooltip BLESSING of Protection
+/cast BLESSING of Protection
+/cancelaura BLESSING of Protection
+END
+VER 3 000000000000004E "healing cancel" "INV_MISC_QUESTIONMARK"
+/cancelaura regrowth
+/cancelaura rejuvenation
+/cancelaura lifebloom
+/cancelaura glimmer
+/cancelaura Beacon of Light
+END
+VER 3 0000000000000036 "HOS" "SPELL_HOLY_SEALOFSACRIFICE"
+#showtooltip Blessing of Sacrifice
+/cast [@mouseover] Blessing of Sacrifice
+END
+VER 3 000000000000000C "hump" "INV_MISC_QUESTIONMARK"
+/e humps %t's leg
+END
+VER 3 000000000000007F "imprison" "1247263"
+/cast [@mouseover,harm][@focus,harm][] Imprison
+END
+VER 3 0000000000000074 "infcurs" "1344652"
+#showtooltip
+/cast [mod:ctrl, @player] Sigil of Flame; [nomod, @cursor] Sigil of Flame
+END
+VER 3 000000000000001E "Inspect" "INV_MISC_QUESTIONMARK"
+/inspect %t
+END
+VER 3 0000000000000026 "ironbark" "INV_MISC_QUESTIONMARK"
+#showtooltip Ironbark
+/cast [@mouseover] Ironbark 
+END
+VER 3 0000000000000015 "jesus" "INV_HAMMER_1H_PVPHORDE_A_01RED_UPRES.BLP"
+Excuse me %t, do you have time to hear about our lord and savior Jesus Christ?
+END
+VER 3 000000000000006F "kick" "134400"
+#showtooltip Spear Hand Strike
+/cast [@focus,harm,nodead][] Spear Hand Strike
+END
+VER 3 0000000000000053 "kick" "1305153"
+#showtooltip Disrupt
+/cast [@focus,harm,nodead][] Disrupt
+END
+VER 3 0000000000000072 "kick bear" "134400"
+#showtooltip Skull Bash
+/cast /cast [@focus,exists][@target Skull Bash
+END
+VER 3 0000000000000078 "kick druid" "132144"
+/cast [@mouseover,harm][@focus,harm][] Skull Bash
+END
+VER 3 000000000000005D "kick focus" "135932"
+#showtooltip Counterspell
+/cast [@focus,harm,nodead] [] Counterspell
+END
+VER 3 0000000000000077 "kick monk" "608940"
+/cast [@mouseover,harm][@focus,harm][] Spear Hand Strike
+END
+VER 3 0000000000000073 "kick pala" "134400"
+#showtooltip Rebuke
+/cast [@focus,harm,nodead] [] Rebuke
+END
+VER 3 0000000000000054 "leap" "1344650"
+#showtooltip
+/cast [mod:ctrl, @player] Infernal Strike; [nomod, @cursor] Infernal Strike
+END
+VER 3 0000000000000066 "leap" "132341"
+#showtooltip
+/cast [mod:ctrl, @player] Infernal Strike; [nomod, @cursor] Heroic Leap
+END
+VER 3 0000000000000028 "life" "INV_MISC_QUESTIONMARK"
+#showtooltip Lifebloom
+/cast [@mouseover] Lifebloom
+END
+VER 3 000000000000001F "lustren" "INV_MISC_QUESTIONMARK"
+/whisper Lustren you have been awful, I have hated every moment of this God awful experience with you.  I really hope you have a dreadful day today, you big headed ass.
+END
+VER 3 0000000000000004 "macro" "INV_MISC_QUESTIONMARK"
+/cast Nature's Vigil
+/cast Incarnation: Chosen of Elune
+END
+VER 3 0000000000000017 "mark 4" "INV_MISC_QUESTIONMARK"
+/wm 4
+END
+VER 3 0000000000000018 "mark 5" "INV_MISC_QUESTIONMARK"
+/wm 5
+END
+VER 3 0000000000000019 "mark 6" "INV_MISC_QUESTIONMARK"
+/wm 6
+END
+VER 3 000000000000001A "mark 7" "INV_MISC_QUESTIONMARK"
+/wm 7
+END
+VER 3 000000000000001B "mark 8" "INV_MISC_QUESTIONMARK"
+/wm 8
+END
+VER 3 0000000000000016 "marker 3" "INV_MISC_QUESTIONMARK"
+/wm 3
+END
+VER 3 000000000000006C "melee soak" "132341"
+/rw Melee Soak
+END
+VER 3 000000000000006B "meteor" "1033911"
+#showtooltip
+/cast [@cursor] Meteor
+END
+VER 3 000000000000005A "meteor" "514016"
+#showtooltip
+/cast [mod:ctrl, @player] Meteor; [nomod, @cursor] Meteor
+END
+VER 3 0000000000000038 "moonfire" "SPELL_NATURE_STARFALL"
+END
+VER 3 000000000000003A "moonfire" "INV_MISC_QUESTIONMARK"
+a
+END
+VER 3 0000000000000024 "moonfire" "INV_MISC_QUESTIONMARK"
+#showtooltip Moonfire
+/cast [@mouseover,harm][] Moonfire
+END
+VER 3 0000000000000075 "mousekick" "132341"
+/cast [@mouseover,harm][@focus,harm][] pummel
+END
+VER 3 000000000000007E "Mouseover Ass" "1035041"
+/cast [@mouseover,harm][@focus,harm][] Asphyxiate
+END
+VER 3 0000000000000006 "nature's touch" "SPELL_NATURE_HEALINGTOUCH"
+END
+VER 3 0000000000000020 "OH SHIT" "INV_MISC_QUESTIONMARK"
+/cast Rebirth on Zaquaeis
+END
+VER 3 000000000000000D "ohshit" "SPELL_FROST_ARCTICWINDS"
+/cast Dampen Harm
+/cast Fortifying Brew
+/cast Tiger Palm
+/cast Guard
+END
+VER 3 0000000000000013 "out" "INV_MISC_QUESTIONMARK"
+/yell I'm out
+END
+VER 3 000000000000007A "Ping Test" "132136"
+/target Shuja Grimaxe
+/ping [@target]
+/target Austin Huxworth
+/ping [@target]
+/targetlasttarget
+END
+VER 3 0000000000000041 "PULL TIMER" "INV_MISC_QUESTIONMARK"
+/pull 10
+END
+VER 3 000000000000002D "r" "INV_MISC_QUESTIONMARK"
+END
+VER 3 000000000000006D "Range Soakw" "136103"
+/rw Ranged Soak
+END
+VER 3 000000000000000E "ready" "SPELL_NATURE_SWIFTNESS"
+/readycheck
+END
+VER 3 0000000000000045 "readycheck" "135900"
+/readycheck
+END
+VER 3 000000000000001C "Readycheck thend" "INV_MISC_QUESTIONMARK"
+/i Ready check, then DBM pull.
+/readycheck
+END
+VER 3 0000000000000021 "rebirth on mouse" "INV_MISC_QUESTIONMARK"
+#showtooltip Rebirth
+/cast [@mouseover] Rebirth
+END
+VER 3 0000000000000025 "regrowth" "INV_MISC_QUESTIONMARK"
+#showtooltip Innervate
+/cast [@mouseover] Innervate
+END
+VER 3 0000000000000022 "Rejuv mouse" "INV_MISC_QUESTIONMARK"
+#showtooltip Rejuvenation
+/cast [@mouseover] Rejuvenation
+END
+VER 3 000000000000004C "reverse harm" "INV_MISC_QUESTIONMARK"
+#showtooltip
+/cast [@targettarget] Reverse Harm
+END
+VER 3 000000000000007D "REZ" "136080"
+#showtooltip
+/cast [@mouseover,combat,help,dead] Rebirth;
+/cast [@mouseover,nocombat,help,dead][] Revive
+END
+VER 3 0000000000000051 "RING " "839107"
+/cast [@cursor] Ring of Peace
+END
+VER 3 000000000000003E "s" "INV_MISC_QUESTIONMARK"
+#showtooltip Regrowth
+/cast [@mouseover] Regrowth
+END
+VER 3 0000000000000065 "Safe Blink" "134400"
+#showtooltip
+/cancelaura Ice Block
+/cast Blink
+END
+VER 3 0000000000000047 "sev" "INV_MISC_QUESTIONMARK"
+/say Severusevans
+END
+VER 3 0000000000000037 "shadow" "SPELL_SHADOW_SHADOWWORDPAIN"
+/cast [@mouseover] Shadow Word: Pain
+END
+VER 3 000000000000007C "Shift Form" "538517"
+#showtooltip
+/cast [noform:1] bear form
+/cast [form:1] cat form
+END
+VER 3 000000000000004A "SKITRA" "460692"
+/castsequence wm 1, wm 2, wm 3, wm 4, wm 5, wm 6 wm 7, wm 8
+END
+VER 3 000000000000005E "Skovald" "135783"
+/say nO!  i tOO hAvE pRoVeD mY woRtH oDyn!  i aM gOD KiNg sKoValD! tHesE mOrTaLs dArE nOt cHalLenGe mY cLaiM tO tHe AeGiS!
+END
+VER 3 000000000000007B "Sooth" "132136"
+#showtooltip
+/cast [@mouseover,help,nodead] Remove Corruption;
+/cast [@mouseover,harm,nodead][] Soothe
+END
+VER 3 000000000000006E "spam" "132341"
+/cast Shield Slam
+/cast Revenge
+END
+VER 3 0000000000000067 "Stance" "132341"
+#showtooltip
+/castsequence !Defensive Stance, !Battle Stance
+END
+VER 3 000000000000003C "starfall" "INV_MISC_QUESTIONMARK"
+#showtooltip
+/cast [@cursor] Starfall
+END
+VER 3 0000000000000076 "stormbolt" "311430"
+/cast [@mouseover,harm][@focus,harm][] Storm Bolt
+END
+VER 3 0000000000000023 "sunfire" "INV_MISC_QUESTIONMARK"
+/cast Sunfire [@mouseover] VIVIFY
+END
+VER 3 0000000000000005 "sunmoon" "SPELL_NATURE_STARFALL"
+/cast Moonfire
+/cast Sunfire
+END
+VER 3 0000000000000060 "Surge Gem" "134400"
+#showtooltip
+/use Elemental Potion of Power
+/cast Arcane Surge
+END
+VER 3 0000000000000029 "swift" "INV_MISC_QUESTIONMARK"
+#showtooltip Swiftmend
+/cast [@mouseover] Swiftmend
+END
+VER 3 0000000000000031 "taunt" "INV_MISC_QUESTIONMARK"
+/cast bear form
+/cast Growl
+END
+VER 3 000000000000000A "taunt" "INV_MISC_QUESTIONMARK"
+/cast Bear Form
+/cast Growl
+END
+VER 3 0000000000000048 "Timew" "645221"
+/cancelaura Heroism
+/cancelaura Timewarp
+/cancelaura Drums of Fury
+END
+VER 3 0000000000000052 "Torment guard" "132118"
+/target Veteran Stoneguard
+/cast Torment
+END
+VER 3 000000000000005F "Touch" "236222"
+#showtooltip
+/castsequence reset=10 Arcane Barrage, Touch of the Magi
+END
+VER 3 0000000000000030 "Vent" "INV_MISC_QUESTIONMARK"
+END
+VER 3 0000000000000007 "w" "INV_STAFF_21"
+/cast Bear Form
+/Dance
+END
+VER 3 0000000000000070 "war kick" "134400"
+#showtooltip Pummel
+/cast [@focus,exists][@target] Pummel
+END
+VER 3 000000000000000F "world marker 1" "INV_MISC_QUESTIONMARK"
+/wm 1
+END
+VER 3 0000000000000002 "Zaquaeis" "ABILITY_MOUNT_SNOWYGRYPHON"
+/assist Zaquaeis
+END

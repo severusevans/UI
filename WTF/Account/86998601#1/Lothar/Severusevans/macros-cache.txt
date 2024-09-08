@@ -1,0 +1,19 @@
+VER 3 0100000000000001 "CastSymbiosis001" "INV_MISC_QUESTIONMARK"
+#showtooltip Symbiosis
+/cast  Symbiosis
+/script Symbiosis.Click()
+END
+VER 3 0100000000000002 "Healing Touch" "SPELL_NATURE_HEALINGTOUCH"
+#showtooltip Healing Touch
+/cast {@mouseover} Healing Touch
+END
+VER 3 0100000000000005 "incarn" "571586"
+/use Balefire Branch
+/cast Incarnation: Chosen of Elune
+END
+VER 3 0100000000000003 "VuhDoDCShieldData" "Ability_Repair"
+R[x]1SM1IR1SM1HR2HR2DR2LR2HR2HR3LR3MR3WM3RM3RM4PM4HR4DH4DH4OH5DH5DH5HR5WT5MR[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]1DT[x][x][x][x]0__0__[x]0__0__0__0__0__[x][x][x][x]0__[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]
+END
+VER 3 0100000000000004 "VuhDoDCShieldNames" "Ability_Repair"
+N[x]AriResKatMooAtiNavGnoCenAlrFreTyrSelCutEveMaxZipNatNãtXiaZkiSamSheWútTov[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]Sev[x][x][x][x]HimRei[x]KuruncManGorWat[x][x][x][x]Sha[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]
+END
