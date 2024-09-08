@@ -1,4 +1,7 @@
+@Terciob:
+- Fixing error in default script.
+
 @cont1nuity:
-- Fixing issues with range checks on certain classes/specs.
-- Fixing Mage execute range.
+- Fixing combo points for classic.
+- Consolidating option to rename casts based on DMB or BigWigs renamed spells.
 
